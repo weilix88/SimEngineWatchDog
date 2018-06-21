@@ -1,5 +1,7 @@
 package main.java.com.buildsim.util;
 
+import main.java.com.buildsim.file.SelfDestroyFile;
+import main.java.com.buildsim.init.WatchDogConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,5 +54,19 @@ public class FileUtil {
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
         }
+    }
+
+    public static File createTempFile(String fileName) {
+        File res;
+
+        String tmpfolder = WatchDogConfig.readProperty("tmpfolder");
+        String randomFolderPath = tmpfolder + Hasher.hash(System.currentTimeMillis()+"", HashMethod.MD5) + "\\";
+
+        File randomFolder = new File(randomFolderPath);
+        randomFolder.mkdir();
+
+        res = new SelfDestroyFile(randomFolderPath + fileName, true);
+
+        return res;
     }
 }
