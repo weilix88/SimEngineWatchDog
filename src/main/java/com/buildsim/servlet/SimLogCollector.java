@@ -2,6 +2,8 @@ package main.java.com.buildsim.servlet;
 
 import main.java.com.buildsim.cloud.CloudFileUtil;
 import main.java.com.buildsim.cloud.CloudFileUtilFactory;
+import main.java.com.buildsim.cloud.RedisAccess;
+import main.java.com.buildsim.cloud.RedisAccessFactory;
 import main.java.com.buildsim.file.Compressor;
 import main.java.com.buildsim.init.WatchDogConfig;
 import main.java.com.buildsim.util.*;
@@ -35,6 +37,14 @@ public class SimLogCollector extends HttpServlet {
 
         String filePath = dir + "\\" + commitId + "_" + agent;
         FileUtil.appendToFile(filePath, lineFormater(engineTimestamp, engineURL, msg, type.toUpperCase()));
+
+        if(type.equalsIgnoreCase("severe_error")){
+            try {
+                RedisAccess access = RedisAccessFactory.getAccess();
+                access.set("TaskSevereError#" + commitId+"_"+agent, msg);
+                access.close();
+            } catch (IOException e) {}
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
