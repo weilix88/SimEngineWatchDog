@@ -23,9 +23,10 @@
 hs_err_pid*
 
 .idea/*
-/build/
+/build/*
 /target/
 
 .settings/*
 .project
 .classpath
+src/main/resources/*
