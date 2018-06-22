@@ -50,4 +50,6 @@ public class RedisAccess implements Closeable{
 	public Long expire(String key) {
 		return commands.expire(key, EXPIRE);
 	}
+
+	public Long llen(String key){ return commands.llen(key); }
 }
