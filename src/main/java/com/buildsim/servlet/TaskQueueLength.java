@@ -1,6 +1,8 @@
 package main.java.com.buildsim.servlet;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import main.java.com.buildsim.cloud.RedisAccess;
 import main.java.com.buildsim.cloud.RedisAccessFactory;
 import main.java.com.buildsim.util.ServletUtil;
@@ -19,11 +21,29 @@ public class TaskQueueLength extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RedisAccess ra = RedisAccessFactory.getAccess();
-        long len = ra.llen("TaskQueue");
+        JsonParser jp = new JsonParser();
+        JsonArray list = new JsonArray();
 
-        JsonObject jo = new JsonObject();
-        jo.addProperty("task_queue_len", len);
-        ServletUtil.returnJsonResult(response, jo);
+        RedisAccess ra = RedisAccessFactory.getAccess();
+
+        String jsonStr;
+        int idx = 0;
+        while((jsonStr=ra.lindx("TaskQueue", idx)) != null){
+            idx++;
+
+            try {
+                JsonObject jo = jp.parse(jsonStr).getAsJsonObject();
+                list.add("Commit id: " +
+                        jo.get("commit_id").getAsString() + "_" +
+                        jo.get("parallel_agent").getAsString());
+            }catch (Exception e){
+                list.add("Error: "+e.getMessage());
+            }
+        }
+
+        JsonObject res = new JsonObject();
+        res.addProperty("task_queue_len", list.size());
+        res.add("tasks", list);
+        ServletUtil.returnJsonResult(response, res);
     }
 }

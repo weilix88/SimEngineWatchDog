@@ -52,4 +52,6 @@ public class RedisAccess implements Closeable{
 	}
 
 	public Long llen(String key){ return commands.llen(key); }
+
+	public String lindx(String key, long idx){ return commands.lindex(key, idx); }
 }
