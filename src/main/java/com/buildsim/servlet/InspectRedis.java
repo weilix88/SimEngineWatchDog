@@ -22,7 +22,7 @@ public class InspectRedis extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject res = new JsonObject();
 
-        String key = request.getParameter("key0");
+        String key = request.getParameter("key");
         if(StringUtil.isNullOrEmpty(key)){
             res.addProperty("status", "error");
             res.addProperty("error_msg", "No key found");
