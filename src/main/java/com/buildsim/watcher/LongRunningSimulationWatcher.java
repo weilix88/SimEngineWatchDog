@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Watcher implements Runnable {
+public class LongRunningSimulationWatcher implements Runnable {
     private static final long THRESHOLD = 45 * 60 * 1000;  // 45 minutes
     private static final long SLEEP = 5 * 60 * 1000;       // 5 minutes
 
@@ -18,7 +18,7 @@ public class Watcher implements Runnable {
 
     private Set<String> sent;
 
-    public Watcher() {
+    public LongRunningSimulationWatcher() {
         this.sent = new HashSet<>();
     }
 
