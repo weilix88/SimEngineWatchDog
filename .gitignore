@@ -30,3 +30,5 @@ hs_err_pid*
 .project
 .classpath
 src/main/resources/*
+src/main/resources/watchdog.config
+target/classes/main/resources/watchdog.config
