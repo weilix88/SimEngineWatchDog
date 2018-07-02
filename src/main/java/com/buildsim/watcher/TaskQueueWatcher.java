@@ -24,12 +24,20 @@ public class TaskQueueWatcher implements Runnable {
 
     @Override
     public void run() {
+        int queueNotEmpty = 0;
         while (true) {
             try {
                 RedisAccess ra = RedisAccessFactory.getAccess();
 
                 if(ra.lindx("TaskQueue", 0) != null){
                     StatusReporter.wakeUpSimulationCluster();
+                    queueNotEmpty++;
+                    if(queueNotEmpty==5){
+                        StatusReporter.wakeUpBackupServer();
+                        queueNotEmpty = 0;
+                    }
+                }else {
+                    queueNotEmpty = 0;
                 }
 
             try {
